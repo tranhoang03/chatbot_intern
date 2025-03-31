@@ -1,0 +1,22 @@
+[
+  {
+    "timestamp": "2025-03-31T14:14:11.187412",
+    "query": "cho tôi tên các loại thức uống có trong cửa hàng",
+    "response": "Các loại thức uống có trong cửa hàng là: Classic Espresso Drinks, Coffee, Frappuccino Blended Coffee, Frappuccino Blended Crème, Frappuccino Light Blended Coffee, Shaken Iced Beverages, Signature Espresso Drinks, Smoothies, và Tazo Tea Drinks."
+  },
+  {
+    "timestamp": "2025-03-31T14:15:24.868929",
+    "query": "quit",
+    "response": "Tạm biệt bạn! Hẹn gặp lại."
+  },
+  {
+    "timestamp": "2025-03-31T14:22:25.996399",
+    "query": "dựa trên các loại thức uống bạn đề xuất. Tôi buồn ngủ thì nên uống gì?",
+    "response": "Nếu bạn đang buồn ngủ, một ly cà phê sẽ giúp bạn tỉnh táo! Cửa hàng có Cà phê pha sẵn với nhiều kích cỡ:\n\n* **Short:** 175mg caffeine\n* **Tall:** 260mg caffeine\n* **Grande:** 330mg caffeine\n* **Venti:** 410mg caffeine\n\nChọn cỡ nào tùy thuộc vào bạn muốn tỉnh táo đến mức nào nhé! 😉"
+  },
+  {
+    "timestamp": "2025-03-31T14:31:26.221020",
+    "query": "tôi muốn biết có ai tên dũng đã từng ghé quán chưa",
+    "response": "Không có ai tên Dũng đã từng ghé quán."
+  }
+]
