@@ -281,20 +281,12 @@ class OptimizedRAGSystem:
             # Get recent chat history
             recent_history = self.chat_history.get_recent_history()
             
-            # Generate natural language response
-            prompt = f"""
-            Dựa trên câu hỏi và kết quả SQL sau:
-
-            Câu hỏi: {query}
-            Kết quả SQL: {formatted_results}
-
-            Yêu cầu:
-            1. Trả lời câu hỏi dựa trên kết quả SQL
-            2. Nếu câu hỏi về số lượng bảng, trả lời chính xác số lượng
-            3. Nếu câu hỏi về thông tin khác, trả lời dựa trên kết quả SQL
-            4. Không thêm thông tin không liên quan
-            5. Trả lời ngắn gọn, rõ ràng
-            """
+            # Generate natural language response using PromptManager
+            prompt = PromptManager.get_sql_response_prompt(
+                query=query,
+                results=formatted_results,
+                history=recent_history
+            )
             
             response = self.llm.invoke(prompt)
             # Extract only the content from the response
