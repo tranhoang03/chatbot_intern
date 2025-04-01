@@ -1,0 +1,70 @@
+.stApp {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: transparent;
+    color: #ffffff;
+}
+
+.stTitle {
+    color: #ffffff;
+    font-size: 2.5em;
+    text-align: center;
+    padding: 1em 0;
+}
+
+.stChatMessage {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 1em;
+    margin: 0.5em 0;
+    color: #ffffff;
+    backdrop-filter: blur(10px);
+}
+
+.stChatInput {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: transparent;
+    padding: 1em;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+}
+
+.stChatInputContainer {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 1em;
+    backdrop-filter: blur(10px);
+}
+
+.stSidebar {
+    background-color: transparent;
+    color: #ffffff;
+}
+
+.stMarkdown {
+    font-size: 1.1em;
+    line-height: 1.6;
+    color: #ffffff;
+}
+
+.stTextInput > div > div > input {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.stTextInput > div > div > input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.stButton > button {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+}
+
+.stButton > button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+} 
