@@ -156,18 +156,55 @@ class OptimizedRAGSystem:
             schema_info = []
             for table in tables:
                 table_name = table[0]
+                
                 # Get table schema
                 cursor.execute(f"PRAGMA table_info({table_name})")
                 columns = cursor.fetchall()
+                
+                # Get foreign keys
+                cursor.execute(f"PRAGMA foreign_key_list({table_name})")
+                foreign_keys = cursor.fetchall()
+                
+                # Get indexes (including primary keys)
+                cursor.execute(f"PRAGMA index_list({table_name})")
+                indexes = cursor.fetchall()
                 
                 # Format column information
                 column_info = []
                 for col in columns:
                     col_name = col[1]
                     col_type = col[2]
-                    column_info.append(f"{col_name} ({col_type})")
+                    is_pk = col[5] == 1  # Check if column is primary key
+                    pk_info = " (PRIMARY KEY)" if is_pk else ""
+                    column_info.append(f"{col_name} ({col_type}){pk_info}")
                 
-                schema_info.append(f"Bảng {table_name}:\n" + "\n".join(column_info))
+                # Format foreign key information
+                fk_info = []
+                for fk in foreign_keys:
+                    ref_table = fk[2]  # Referenced table
+                    from_col = fk[3]   # Column in this table
+                    to_col = fk[4]     # Column in referenced table
+                    fk_info.append(f"FOREIGN KEY ({from_col}) REFERENCES {ref_table}({to_col})")
+                
+                # Format index information
+                index_info = []
+                for idx in indexes:
+                    idx_name = idx[1]
+                    is_unique = idx[2] == 1
+                    if not idx_name.startswith('sqlite_autoindex'):  # Skip auto-generated indexes
+                        index_info.append(f"{'UNIQUE ' if is_unique else ''}INDEX {idx_name}")
+                
+                # Combine all information
+                table_info = [f"Bảng {table_name}:"]
+                table_info.extend(column_info)
+                if fk_info:
+                    table_info.append("\nKhóa ngoại:")
+                    table_info.extend(fk_info)
+                if index_info:
+                    table_info.append("\nChỉ mục:")
+                    table_info.extend(index_info)
+                
+                schema_info.append("\n".join(table_info))
             
             conn.close()
             return "\n\n".join(schema_info)
@@ -181,32 +218,8 @@ class OptimizedRAGSystem:
         # Get database schema
         schema_info = self._get_database_schema()
         
-        # Create prompt with schema information
-        prompt = f"""
-        Bạn là một chuyên gia SQL. Hãy tạo một truy vấn SQL chính xác để trả lời câu hỏi của người dùng.
-
-        Câu hỏi từ người dùng:
-        "{query}"
-
-        **Cấu trúc database hiện có:**
-        {schema_info}
-
-        **Yêu cầu:**
-        1. Chỉ sử dụng các bảng và cột có trong cấu trúc database trên
-        2. Chỉ tạo câu truy vấn SELECT
-        3. Không sử dụng các từ khóa nguy hiểm (DROP, DELETE, UPDATE, INSERT, ALTER, TRUNCATE)
-        4. Đảm bảo truy vấn chạy được trên SQLite
-        5. Nếu có điều kiện lọc dữ liệu, sử dụng `WHERE`
-        6. Nếu cần sắp xếp, sử dụng `ORDER BY`
-        7. Nếu cần nối bảng, sử dụng `JOIN` hợp lý
-        8. Không giả định bất kỳ giá trị nào không có trong bảng
-
-        **Quy tắc:**
-        1. Chỉ trả về mã SQL, không có giải thích
-        2. Không chứa Markdown code block
-        3. Không thêm comment hay giải thích gì thêm
-        4. Đảm bảo câu SQL đúng cú pháp
-        """
+        # Create prompt with schema information using PromptManager
+        prompt = PromptManager.get_sql_generation_prompt(query, schema_info)
         
         try:
             response = self.llm.invoke(prompt)
