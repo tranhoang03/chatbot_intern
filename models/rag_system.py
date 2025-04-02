@@ -213,39 +213,6 @@ class OptimizedRAGSystem:
             print(f"Error getting database schema: {e}")
             return ""
 
-    def _generate_sql_from_context(self, query: str, context: List[str]) -> str:
-        """Generate SQL query based on context"""
-        # Get database schema
-        schema_info = self._get_database_schema()
-        
-        # Create prompt with schema information using PromptManager
-        prompt = PromptManager.get_sql_generation_prompt(query, schema_info)
-        
-        try:
-            response = self.llm.invoke(prompt)
-            # Extract only the content from the response
-            if hasattr(response, 'content'):
-                sql_query = response.content.strip()
-            else:
-                sql_query = str(response).strip()
-            
-            print(f"\nGenerated SQL query: {sql_query}")  # Debug print
-            
-            # Validate SQL query
-            if not validate_sql_query(sql_query):
-                print(f"Invalid SQL query: {sql_query}")  # Debug print
-                raise ValueError(f"Invalid SQL query generated: {sql_query}")
-            
-            # Test the query before returning
-            test_results = execute_sql_query(self.config.db_path, sql_query)
-            if test_results is None:
-                raise ValueError(f"SQL query execution failed: {sql_query}")
-                
-            return sql_query
-            
-        except Exception as e:
-            print(f"Error in SQL generation: {str(e)}")  # Debug print
-            raise
     
     def _answer_with_vector(self, query: str) -> str:
         """Answer query using only vector search"""
@@ -278,9 +245,7 @@ class OptimizedRAGSystem:
         """Answer query using SQL"""
         try:
             # Generate SQL query directly from the question
-            sql_query = self._generate_sql_from_context(query, [])
-            print(f"Generated SQL query: {sql_query}")  # Print the SQL query
-            
+            sql_query = PromptManager.get_sql_generation_prompt(query, self._get_database_schema())# Print the SQL query
             # Execute SQL query
             results = execute_sql_query(
                 self.config.db_path,
@@ -300,7 +265,6 @@ class OptimizedRAGSystem:
                 results=formatted_results,
                 history=recent_history
             )
-            
             response = self.llm.invoke(prompt)
             # Extract only the content from the response
             if hasattr(response, 'content'):
@@ -321,7 +285,6 @@ class OptimizedRAGSystem:
                 response = self._answer_with_sql(query)
             else:
                 response = self._answer_with_vector(query)
-            
             # Save to chat history
             self.chat_history.add_chat(query, response)
             
