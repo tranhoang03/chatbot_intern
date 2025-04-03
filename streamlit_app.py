@@ -78,30 +78,42 @@ with col2:
 rag_system = get_system()
 
 # Authentication section
+# Check if running on Streamlit Cloud by checking for a specific environment variable
+is_streamlit_cloud = os.getenv("STREAMLIT_SERVER_PORT") is not None
+
 if not st.session_state.authenticated:
-    # Face authentication
-    user_info = authenticate_user()
-    
-    if user_info:
-        st.session_state.user_info = user_info
+    if is_streamlit_cloud:
+        # Bypass authentication on Streamlit Cloud
         st.session_state.authenticated = True
-        
-        # Get purchase history
-        purchase_history = get_purchase_history(user_info['id'])
-        st.session_state.purchase_history = purchase_history
-        
-        # Set up personalized system prompt
-        purchase_history_text = ""
-        if purchase_history:
-            purchase_history_text = "\nLịch sử mua hàng gần đây:\n"
-            for date, product, quantity, price, rate in purchase_history:
-                purchase_history_text += f"- {date}: {product} (SL: {quantity}, Giá: {price}đ, Đánh giá: {rate}⭐)\n"
-        
-        st.session_state.system_prompt = f"""
-        Bạn đang trò chuyện với khách hàng {user_info['name']} (ID: {user_info['id']}).\n
-        Lịch sử mua hàng gần đây của khách: {purchase_history_text}
-       
-        """
+        st.session_state.user_info = {"name": "Cloud User", "id": 0} # Example default user
+        st.warning("Face authentication is disabled on Streamlit Cloud. Proceeding as default user.")
+    else:
+        # Face authentication (only run locally)
+        user_info = authenticate_user()
+
+        if user_info:
+            st.session_state.user_info = user_info
+            st.session_state.authenticated = True
+
+            # Get purchase history
+            purchase_history = get_purchase_history(user_info['id'])
+            st.session_state.purchase_history = purchase_history
+
+            # Set up personalized system prompt
+            purchase_history_text = ""
+            if purchase_history:
+                purchase_history_text = "\nLịch sử mua hàng gần đây:\n"
+                for date, product, quantity, price, rate in purchase_history:
+                    purchase_history_text += f"- {date}: {product} (SL: {quantity}, Giá: {price}đ, Đánh giá: {rate}⭐)\n"
+
+            st.session_state.system_prompt = f"""
+            Bạn đang trò chuyện với khách hàng {user_info['name']} (ID: {user_info['id']}).\n
+            Lịch sử mua hàng gần đây của khách: {purchase_history_text}
+           
+            """
+        else:
+            # Keep authenticated as False if face auth fails locally
+            st.error("Authentication failed.")
 
 # Main chat interface
 if st.session_state.authenticated:
@@ -131,34 +143,38 @@ if st.session_state.authenticated:
 
     # Sidebar with user information
     with st.sidebar:
-        st.markdown("### 👤 Thông tin người dùng")
-        st.markdown(f"""
-        **Tên:** {st.session_state.user_info['name']}
-        **ID:** {st.session_state.user_info['id']}
-        """)
-        
-        # Display purchase history
-        if st.session_state.purchase_history:
-            st.markdown("### 🛍️ Lịch sử mua hàng")
-            for date, product, quantity, price, rate in st.session_state.purchase_history:
-                st.markdown(f"""
-                <div class="purchase-history-item">
-                    <strong>{date}</strong><br>
-                    Sản phẩm: {product}<br>
-                    Số lượng: {quantity}<br>
-                    Giá: {price}đ<br>
-                    Đánh giá: {rate}⭐
-                </div>
-                """, unsafe_allow_html=True)
-        
-        # Add a logout button
-        if st.button("🚪 Đăng xuất"):
-            st.session_state.authenticated = False
-            st.session_state.user_info = None
-            st.session_state.system_prompt = None
-            st.session_state.purchase_history = None
-            st.session_state.messages = []
-            st.rerun()
+        if st.session_state.user_info: # Check if user_info exists before displaying
+            st.markdown("### 👤 Thông tin người dùng")
+            st.markdown(f"""
+            **Tên:** {st.session_state.user_info['name']}
+            **ID:** {st.session_state.user_info['id']}
+            """)
+
+            # Display purchase history
+            if st.session_state.purchase_history:
+                st.markdown("### 🛍️ Lịch sử mua hàng")
+                for date, product, quantity, price, rate in st.session_state.purchase_history:
+                    st.markdown(f"""
+                    <div class="purchase-history-item">
+                        <strong>{date}</strong><br>
+                        Sản phẩm: {product}<br>
+                        Số lượng: {quantity}<br>
+                        Giá: {price}đ<br>
+                        Đánh giá: {rate}⭐
+                    </div>
+                    """, unsafe_allow_html=True)
+
+            # Add a logout button
+            if st.button("🚪 Đăng xuất"):
+                st.session_state.authenticated = False
+                st.session_state.user_info = None
+                st.session_state.system_prompt = None
+                st.session_state.purchase_history = None
+                st.session_state.messages = []
+                st.rerun()
+        else: # Handle case where authentication was bypassed
+             st.markdown("### 👤 Thông tin người dùng")
+             st.markdown("Running on Streamlit Cloud (No specific user authenticated).")
 
 # Enhanced sidebar with better styling
 with st.sidebar:
