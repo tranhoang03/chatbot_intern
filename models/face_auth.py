@@ -7,8 +7,15 @@ from scipy.spatial.distance import cosine
 import time
 import json
 import streamlit as st
+import os
+from pathlib import Path
+
+# Get base directory
+BASE_DIR = Path(__file__).parent.parent
 
 def load_facenet_pb(model_path):
+    # Use absolute path
+    model_path = os.path.join(BASE_DIR, "models", model_path)
     with tf.io.gfile.GFile(model_path, "rb") as f:
         graph_def = tf.compat.v1.GraphDef()
         graph_def.ParseFromString(f.read())
@@ -60,11 +67,9 @@ def find_matching_face(embedding, threshold=0.5):
     conn.close()
     return best_match
 
-
-
 def capture_face():
-    # Load YOLO model
-    yolo_model = YOLO('models/best.pt')
+    # Load YOLO model with absolute path
+    yolo_model = YOLO(os.path.join(BASE_DIR, "models", "best.pt"))
     
     # Initialize webcam
     cap = cv2.VideoCapture(0)
@@ -135,8 +140,8 @@ def capture_face():
     return None
 
 def process_face_recognition(face_img):
-    # Load FaceNet model
-    model_path = 'models/20180402-114759.pb'
+    # Use absolute path for FaceNet model
+    model_path = os.path.join(BASE_DIR, "models", "20180402-114759.pb")
     facenet_graph = load_facenet_pb(model_path)
     
     # Get input and output tensors
