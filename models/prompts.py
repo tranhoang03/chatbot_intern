@@ -49,25 +49,21 @@ class PromptManager:
         Câu hỏi: {query}
 
         Yêu cầu:
-        1. Dựa vào lịch sử mua hàng để tư vấn sản phẩm phù hợp(nếu có)
-        2. Đề xuất các sản phẩm tương tự với những gì khách hàng đã mua (nếu có)
-        3. Trả lời ngắn gọn, tự nhiên và thân thiện
-        4. Chỉ sử dụng thông tin từ kết quả tính toán
-        5. Duy trì tính nhất quán với các câu trả lời trước
-        6. Với danh sách, hiển thị rõ ràng từng mục
-        7. Với kết quả tính toán, hiển thị số liệu cụ thể
-        8. Tránh lặp lại cấu trúc câu trả lời
-        9. Thêm từ ngữ thân thiện và chuyên nghiệp
-        11. Khi tư vấn về đồ uống, nêu rõ:
-            - Giá cả
+        1. Khi khách hàng hỏi về gợi ý hoặc chưa có quyết định mua sản phẩm nào thì dựa vào lịch sử mua hàng để tư vấn sản phẩm phù hợp(nếu có).
+        2. Trả lời ngắn gọn, tự nhiên và thân thiện
+        3. Chỉ sử dụng thông tin từ kết quả tính toán
+        4. Duy trì tính nhất quán với các câu trả lời trước
+        5. Với danh sách, hiển thị rõ ràng từng mục
+        6. Với kết quả tính toán, hiển thị số liệu cụ thể
+        7. Tránh lặp lại cấu trúc câu trả lời
+        8. Thêm từ ngữ thân thiện và chuyên nghiệp
+        9. Khi tư vấn về đồ uống, nêu rõ:
+            - Giá cả(nếu có)
             - Thành phần
-            - Cách pha chế (nếu có), không có thì không đề cập
             - Lợi ích sức khỏe (nếu có), không có thì không đề cập
-        12. Khi tư vấn về cửa hàng, nêu rõ:
+        10. Khi tư vấn về cửa hàng, nêu rõ:
             - Địa chỉ
             - Giờ mở cửa
-            - Dịch vụ đặc biệt
-            - Chương trình khuyến mãi
         """
     
     @staticmethod
@@ -88,28 +84,25 @@ class PromptManager:
         Câu hỏi: {query}
 
         Yêu cầu:
-        1. Dựa vào lịch sử mua hàng để tư vấn sản phẩm phù hợp(nếu có)
-        2. Đề xuất các sản phẩm tương tự với những gì khách hàng đã mua (nếu có)
-        3. Trả lời ngắn gọn, tự nhiên và thân thiện
-        4. Chỉ sử dụng thông tin từ kết quả tính toán
-        5. Duy trì tính nhất quán với các câu trả lời trước
-        6. Với danh sách, hiển thị rõ ràng từng mục
-        7. Với kết quả tính toán, hiển thị số liệu cụ thể
-        8. Tránh lặp lại cấu trúc câu trả lời
-        9. Thêm từ ngữ thân thiện và chuyên nghiệp
-        10. Khi tư vấn về đồ uống, nêu rõ:
-            - Giá cả
+       1. Khi khách hàng hỏi về gợi ý hoặc chưa có quyết định mua sản phẩm nào thì dựa vào lịch sử mua hàng để tư vấn sản phẩm phù hợp(nếu có).
+        2. Trả lời ngắn gọn, tự nhiên và thân thiện
+        3. Chỉ sử dụng thông tin từ kết quả tính toán
+        4. Duy trì tính nhất quán với các câu trả lời trước
+        5. Với danh sách, hiển thị rõ ràng từng mục
+        6. Với kết quả tính toán, hiển thị số liệu cụ thể
+        7. Tránh lặp lại cấu trúc câu trả lời
+        8. Thêm từ ngữ thân thiện và chuyên nghiệp
+        9. Khi tư vấn về đồ uống, nêu rõ:
+            - Giá cả(nếu có)
             - Thành phần
             - Cách pha chế (nếu có), không có thì không đề cập
             - Lợi ích sức khỏe (nếu có), không có thì không đề cập
         11. Khi tư vấn về cửa hàng, nêu rõ:
             - Địa chỉ
             - Giờ mở cửa
-            - Dịch vụ đặc biệt
-            - Chương trình khuyến mãi
         12 Khi trả lời về thống kê:
             - Giải thích ý nghĩa của số liệu
             - So sánh với các mốc thời gian khác (nếu có)
             - Đưa ra nhận xét và đề xuất (nếu phù hợp)
-        1313. Nếu thiếu thông tin, nói "Xin lỗi, tôi không có đủ thông tin về vấn đề này"
+        13. Nếu thiếu thông tin hoặc không có thông tin, nói "Xin lỗi, tôi không có đủ thông tin về vấn đề này"
         """ 

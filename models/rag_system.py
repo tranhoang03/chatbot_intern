@@ -245,8 +245,16 @@ class OptimizedRAGSystem:
         """Answer query using SQL"""
         try:
             # Generate SQL query directly from the question
-            sql_query = PromptManager.get_sql_generation_prompt(query, self._get_database_schema())# Print the SQL query
-            # Execute SQL query
+            sql_query = PromptManager.get_sql_generation_prompt(query, self._get_database_schema())
+            print(f"Generated SQL Query: {sql_query}") # Optional: Print generated SQL for debugging
+
+            # --- Validate the generated SQL query --- 
+            if not validate_sql_query(sql_query):
+                print(f"SQL query validation failed: {sql_query}")
+                return "Xin lỗi, tôi không thể thực hiện truy vấn này vì lý do an toàn hoặc truy vấn không hợp lệ."
+            # ----------------------------------------
+
+            # Execute SQL query (only if validation passed)
             results = execute_sql_query(
                 self.config.db_path,
                 sql_query,
@@ -272,7 +280,9 @@ class OptimizedRAGSystem:
             return str(response).strip()
             
         except Exception as e:
-            return f"Lỗi khi xử lý câu hỏi: {str(e)}"
+            # Log the specific error during SQL processing
+            print(f"Error during SQL processing: {e}") 
+            return f"Lỗi khi xử lý câu hỏi liên quan đến SQL: {str(e)}"
     
     def answer_query(self, query: str) -> str:
         """Process query and return answer"""
