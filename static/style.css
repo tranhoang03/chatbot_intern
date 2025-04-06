@@ -14,14 +14,22 @@ body {
     max-width: 100%;
     padding: 0;
     background-color: #1e1e2e;
+    transition: all 0.3s ease;
 }
 
 /* Sidebar styles */
 [data-testid="stSidebar"] {
     background-color: #181825;
-    min-width: 270px;
-    max-width: 300px;
+    width: 270px;
     padding: 0.5rem;
+    transition: width 0.3s ease;
+    overflow: hidden;
+}
+
+/* Sidebar hidden state */
+.sidebar-hidden [data-testid="stSidebar"] {
+    width: 0 !important;
+    padding: 0 !important;
 }
 
 /* Chat container */
@@ -29,13 +37,13 @@ body {
     display: flex;
     flex-direction: column;
     height: calc(100vh - 120px);
-    width: 100%;
-    max-width: 900px;
+    flex-grow: 1; /* Allow the chat container to expand */
     margin: 0 auto;
     padding: 1rem 0;
     overflow-y: auto;
     background-color: #1e1e2e;
     gap: 0.5rem;
+    transition: margin-left 0.3s ease; /* Transition when sidebar hides */
 }
 
 /* Chat messages */
@@ -104,6 +112,15 @@ body {
     color: rgba(255, 255, 255, 0.5);
 }
 
+/* Title styles */
+.stTitle {
+    text-align: center;
+    font-size: 4rem;
+    font-weight: bold;
+    color: #ffffff;
+    margin-top: 1rem;  /* Adjust the margin as needed */
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
     .stChatMessageContainer {
@@ -115,4 +132,9 @@ body {
     .stChatMessage {
         max-width: 90%;
     }
+}
+
+/* Class for sidebar hidden state */
+.sidebar-hidden .stChatMessageContainer {
+    margin-left: 0;
 }
