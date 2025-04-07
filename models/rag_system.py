@@ -5,6 +5,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 import os
 import json
 import sqlite3
+import streamlit as st
 
 from config import Config
 from utils import (
@@ -24,16 +25,29 @@ class OptimizedRAGSystem:
     
     def _initialize_components(self):
         """Initialize all necessary components"""
+        # --- Removed redundant token handling - Now handled in Config --- 
+        # try:
+        #     hf_token = st.secrets.get("HUGGINGFACE_HUB_TOKEN")
+        #     if hf_token:
+        #         os.environ["HUGGINGFACE_HUB_TOKEN"] = hf_token
+        #         print("Attempted to set HUGGINGFACE_HUB_TOKEN environment variable from Streamlit secrets.")
+        #     # ... (else print)
+        # except Exception as e:
+        #     # ... (print error)
+        # -------------------------------------------------------------
+
         # Initialize embedding model
+        # It should now automatically use the token set by Config
         self.embeddings = HuggingFaceEmbeddings(
             model_name=self.config.embedding_model
         )
         
         # Initialize LLM
+        # google_api_key is now directly accessed from self.config
         self.llm = ChatGoogleGenerativeAI(
             model=self.config.llm_model,
             temperature=self.config.llm_temperature,
-            google_api_key=self.config.google_api_key
+            google_api_key=self.config.google_api_key # Reads from config object
         )
         
         # Initialize vector store
